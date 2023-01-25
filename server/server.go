@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/JoachAnts/auth-server/card"
 	"github.com/JoachAnts/auth-server/identity"
 )
 
@@ -13,6 +14,7 @@ func identityHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func Start() {
-	identity.Register()
+	http.HandleFunc("/me", identity.Handler)
+	http.HandleFunc("/card", card.Handler)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }

@@ -24,7 +24,7 @@ func TestIdentityUser(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	identity.IdentityHandler(writer, req)
+	identity.Handler(writer, req)
 
 	assert.Equal(t, http.StatusOK, writer.Result().StatusCode)
 	resBody := TestIdentityResponse{}
@@ -44,7 +44,7 @@ func TestIdentityAdmin(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	identity.IdentityHandler(writer, req)
+	identity.Handler(writer, req)
 
 	assert.Equal(t, http.StatusOK, writer.Result().StatusCode)
 	resBody := TestIdentityResponse{}
@@ -63,7 +63,7 @@ func TestIdentityUnauthenticated(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	identity.IdentityHandler(writer, req)
+	identity.Handler(writer, req)
 
 	assert.Equal(t, http.StatusUnauthorized, writer.Result().StatusCode)
 }
@@ -76,7 +76,7 @@ func TestIdentityNotExisting(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	identity.IdentityHandler(writer, req)
+	identity.Handler(writer, req)
 
 	assert.Equal(t, http.StatusNotFound, writer.Result().StatusCode)
 }

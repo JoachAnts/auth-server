@@ -25,7 +25,7 @@ var db = map[string]IdentityResponse{
 	},
 }
 
-func IdentityHandler(w http.ResponseWriter, r *http.Request) {
+func Handler(w http.ResponseWriter, r *http.Request) {
 	userID := r.Header.Get("Authorization")
 	if userID == "" {
 		w.WriteHeader(http.StatusUnauthorized)
@@ -42,8 +42,4 @@ func IdentityHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Write(b)
-}
-
-func Register() {
-	http.HandleFunc("/me", IdentityHandler)
 }
