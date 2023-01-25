@@ -11,10 +11,22 @@ type IdentityResponse struct {
 	Name string `json:"name"`
 }
 
-func IdentityHandler(w http.ResponseWriter, r *http.Request) {
-	res := IdentityResponse{
+var db = map[string]IdentityResponse{
+	"1": {
 		ID:   "1",
 		Name: "John Smith",
+	},
+}
+
+func IdentityHandler(w http.ResponseWriter, r *http.Request) {
+	userID := r.Header.Get("Authorization")
+	if userID == "" {
+		w.WriteHeader(http.StatusUnauthorized)
+	}
+	res, found := db[userID]
+	if !found {
+		w.WriteHeader(http.StatusNotFound)
+		return
 	}
 	b, err := json.Marshal(res)
 	if err != nil {

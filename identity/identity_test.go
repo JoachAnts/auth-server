@@ -15,9 +15,10 @@ type TestIdentityResponse struct {
 	Name string `json:"name"`
 }
 
-func TestIdentity(t *testing.T) {
+func TestIdentityValid(t *testing.T) {
 	writer := httptest.NewRecorder()
 	req, err := http.NewRequest("GET", "/me", nil)
+	req.Header.Add("authorization", "1")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -31,4 +32,29 @@ func TestIdentity(t *testing.T) {
 	}
 	assert.Equal(t, "1", resBody.ID)
 	assert.Equal(t, "John Smith", resBody.Name)
+}
+
+func TestIdentityUnauthenticated(t *testing.T) {
+	writer := httptest.NewRecorder()
+	req, err := http.NewRequest("GET", "/me", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	identity.IdentityHandler(writer, req)
+
+	assert.Equal(t, http.StatusUnauthorized, writer.Result().StatusCode)
+}
+
+func TestIdentityNotExisting(t *testing.T) {
+	writer := httptest.NewRecorder()
+	req, err := http.NewRequest("GET", "/me", nil)
+	req.Header.Add("authorization", "1001")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	identity.IdentityHandler(writer, req)
+
+	assert.Equal(t, http.StatusNotFound, writer.Result().StatusCode)
 }
