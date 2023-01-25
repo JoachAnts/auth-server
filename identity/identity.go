@@ -9,12 +9,19 @@ import (
 type IdentityResponse struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
+	Role string `json:"role"`
 }
 
 var db = map[string]IdentityResponse{
 	"1": {
 		ID:   "1",
 		Name: "John Smith",
+		Role: "user",
+	},
+	"2": {
+		ID:   "2",
+		Name: "Bob Bloggs",
+		Role: "admin",
 	},
 }
 
