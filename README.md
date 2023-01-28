@@ -1,17 +1,15 @@
 # API
 
-```
-GET /me
-```
+## GET /me
 
-## Example Request
+### Example Request
 
 ```
 curl http://localhost:8080/me
         -H "Authorization: 1"
 ```
 
-## Example Response
+### Example Response
 
 ```javascript
 {
@@ -21,18 +19,16 @@ curl http://localhost:8080/me
 }
 ```
 
-```
-GET /card
-```
+## GET /card
 
-## Example Request
+### Example Request
 
 ```
 curl http://localhost:8080/card
         -H "Authorization: 1"
 ```
 
-## Example Response
+### Example Response
 
 ```javascript
 {
