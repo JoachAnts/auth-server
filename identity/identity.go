@@ -18,6 +18,7 @@ type h struct {
 	repo repo.Repo
 }
 
+// FIXME make response camel case
 func (h *h) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	userID := r.Header.Get("Authorization")
 	if userID == "" {

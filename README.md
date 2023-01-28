@@ -70,3 +70,10 @@ curl http://localhost:8080/card \
 To start the auth server, run the following command:
 
     docker compose up
+
+# TODO
+
+- [ ] Run tests in Docker compose
+- [ ] Use card repository for card handler
+- [ ] Implement limit change API
+- [ ] Think about different currencies

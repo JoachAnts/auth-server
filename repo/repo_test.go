@@ -19,7 +19,7 @@ func TestRepo(t *testing.T) {
 	r := repo.NewRepo(map[string]repo.User{
 		user1.ID: user1,
 		user2.ID: user2,
-	})
+	}, map[string]repo.Card{})
 
 	user1Result := r.GetUser(user1.ID)
 	user2Result := r.GetUser(user2.ID)
@@ -34,7 +34,7 @@ func TestRepo(t *testing.T) {
 }
 
 func TestUserNotFound(t *testing.T) {
-	r := repo.NewRepo(map[string]repo.User{})
+	r := repo.NewRepo(map[string]repo.User{}, map[string]repo.Card{})
 
 	result := r.GetUser("1")
 

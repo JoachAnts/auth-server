@@ -38,7 +38,7 @@ func testHandler(t *testing.T, userID *string, expectedStatus int, expectedBody 
 			Name: "Bob Smith",
 			Role: "admin",
 		},
-	})).ServeHTTP(writer, req)
+	}, map[string]repo.Card{})).ServeHTTP(writer, req)
 
 	assert.Equal(t, expectedStatus, writer.Result().StatusCode)
 	resBody := TestIdentityResponse{}
