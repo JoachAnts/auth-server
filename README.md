@@ -5,7 +5,7 @@
 ### Example Request
 
 ```
-curl http://localhost:8080/me
+curl http://localhost:8080/me \
         -H "Authorization: 1"
 ```
 
@@ -24,7 +24,7 @@ curl http://localhost:8080/me
 ### Example Request
 
 ```
-curl http://localhost:8080/card
+curl http://localhost:8080/card \
         -H "Authorization: 1"
 ```
 
@@ -46,9 +46,9 @@ curl http://localhost:8080/card
 ### Example Request
 
 ```
-curl http://localhost:8080/card
-        -H "Content-Type: application/json"
-        -H "Authorization: 1"
+curl http://localhost:8080/card \
+        -H "Content-Type: application/json" \
+        -H "Authorization: 1" \
         -d '{"userID": 1, "newLimit": 20000}'
 ```
 
