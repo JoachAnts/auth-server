@@ -2,6 +2,7 @@ package card
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/JoachAnts/auth-server/repo"
@@ -26,6 +27,7 @@ type h struct {
 }
 
 func (h *h) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	// TODO use mux
 	if r.Method == http.MethodPost {
 		h.doPost(w, r)
 		return
@@ -55,6 +57,7 @@ func (h *h) doGet(w http.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 
+// TODO use camel case
 type CardLimitRequest struct {
 	UserID   string
 	NewLimit int
@@ -74,6 +77,7 @@ func (h *h) doPost(w http.ResponseWriter, r *http.Request) {
 	var reqBody = CardLimitRequest{}
 	err := json.NewDecoder(r.Body).Decode(&reqBody)
 	if err != nil {
+		log.Printf("Error decoding request body: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -84,6 +88,7 @@ func (h *h) doPost(w http.ResponseWriter, r *http.Request) {
 	}
 	b, err := json.Marshal(res)
 	if err != nil {
+		log.Printf("Error encoding response body: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

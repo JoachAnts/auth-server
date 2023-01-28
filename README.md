@@ -48,20 +48,18 @@ curl http://localhost:8080/card \
 ```
 curl http://localhost:8080/card \
         -H "Content-Type: application/json" \
-        -H "Authorization: 1" \
-        -d '{"userID": 1, "newLimit": 20000}'
+        -H "Authorization: 2" \
+        -d '{"UserID": "1", "NewLimit": 20000}'
 ```
 
 ### Example Response
 
 ```javascript
 {
-    "card": {
-        "maskedNumber": "**** **** **** 4444",
-        "limit": 20000,
-        "balance": 11241,
-        "exp": "12/23"
-    }
+    "maskedNumber": "**** **** **** 4444",
+    "limit": 20000,
+    "balance": 11241,
+    "exp": "12/23"
 }
 ```
 
