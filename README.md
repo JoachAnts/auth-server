@@ -7,6 +7,15 @@
 ```
 curl http://localhost:8080/me \
         -H "Authorization: 1"
+
+curl http://localhost:8080/me \
+        -H "Authorization: 2"
+
+curl http://localhost:8080/card \
+        -H "Authorization: 1"
+
+curl http://localhost:8080/card \
+        -H "Authorization: 2"
 ```
 
 ### Example Response

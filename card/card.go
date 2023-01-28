@@ -31,6 +31,10 @@ func (h *h) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusUnauthorized)
 	}
 	res := h.repo.GetCard(userID)
+	if res == nil {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
 	b, err := json.Marshal(res)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

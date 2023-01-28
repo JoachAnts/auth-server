@@ -64,3 +64,19 @@ func TestCardUnauthorized(t *testing.T) {
 
 	assert.Equal(t, http.StatusUnauthorized, writer.Result().StatusCode)
 }
+
+func TestNoCardForUser(t *testing.T) {
+	writer := httptest.NewRecorder()
+	req, err := http.NewRequest("GET", "/card", nil)
+	req.Header.Add("authorization", "1")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	card.NewHandler(repo.NewRepo(
+		map[string]repo.User{},
+		map[string]repo.Card{},
+	)).ServeHTTP(writer, req)
+
+	assert.Equal(t, http.StatusNotFound, writer.Result().StatusCode)
+}
