@@ -23,6 +23,7 @@ func (h *h) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	userID := r.Header.Get("Authorization")
 	if userID == "" {
 		w.WriteHeader(http.StatusUnauthorized)
+		return
 	}
 	res := h.repo.GetUser(userID)
 	if res == nil {
