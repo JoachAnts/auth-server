@@ -32,3 +32,11 @@ func TestRepo(t *testing.T) {
 	assert.Equal(t, user2.ID, user2Result.ID)
 	assert.Equal(t, user2.Name, user2Result.Name)
 }
+
+func TestUserNotFound(t *testing.T) {
+	r := repo.NewRepo(map[string]repo.User{})
+
+	result := r.GetUser("1")
+
+	assert.Nil(t, result)
+}

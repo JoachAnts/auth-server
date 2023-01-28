@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/JoachAnts/auth-server/identity"
+	"github.com/JoachAnts/auth-server/repo"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -26,7 +27,18 @@ func testHandler(t *testing.T, userID *string, expectedStatus int, expectedBody 
 		t.Fatal(err)
 	}
 
-	identity.Handler(writer, req)
+	identity.NewHandler(repo.NewRepo(map[string]repo.User{
+		"1": {
+			ID:   "1",
+			Name: "John Reece",
+			Role: "user",
+		},
+		"2": {
+			ID:   "2",
+			Name: "Bob Smith",
+			Role: "admin",
+		},
+	})).ServeHTTP(writer, req)
 
 	assert.Equal(t, expectedStatus, writer.Result().StatusCode)
 	resBody := TestIdentityResponse{}
@@ -45,7 +57,7 @@ func TestIdentityUser(t *testing.T) {
 	userID := "1"
 	testHandler(t, &userID, 200, &TestIdentityResponse{
 		ID:   "1",
-		Name: "John Smith",
+		Name: "John Reece",
 		Role: "user",
 	})
 }
@@ -54,7 +66,7 @@ func TestIdentityAdmin(t *testing.T) {
 	userID := "2"
 	testHandler(t, &userID, 200, &TestIdentityResponse{
 		ID:   "2",
-		Name: "Bob Bloggs",
+		Name: "Bob Smith",
 		Role: "admin",
 	})
 }

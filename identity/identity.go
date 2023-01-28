@@ -4,34 +4,27 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+
+	"github.com/JoachAnts/auth-server/repo"
 )
 
-type IdentityResponse struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
-	Role string `json:"role"`
+func NewHandler(repo repo.Repo) http.Handler {
+	return &h{
+		repo: repo,
+	}
 }
 
-var db = map[string]IdentityResponse{
-	"1": {
-		ID:   "1",
-		Name: "John Smith",
-		Role: "user",
-	},
-	"2": {
-		ID:   "2",
-		Name: "Bob Bloggs",
-		Role: "admin",
-	},
+type h struct {
+	repo repo.Repo
 }
 
-func Handler(w http.ResponseWriter, r *http.Request) {
+func (h *h) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	userID := r.Header.Get("Authorization")
 	if userID == "" {
 		w.WriteHeader(http.StatusUnauthorized)
 	}
-	res, found := db[userID]
-	if !found {
+	res := h.repo.GetUser(userID)
+	if res == nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
