@@ -30,6 +30,10 @@ func (h *h) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
+	if res.Roles == nil || len(res.Roles) == 0 {
+		w.WriteHeader(http.StatusForbidden)
+		return
+	}
 	b, err := json.Marshal(res)
 	if err != nil {
 		log.Printf("Error marshalling identity response: %v", err)

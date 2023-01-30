@@ -9,7 +9,14 @@ type Repo interface {
 type User struct {
 	ID   string
 	Name string
-	Role string
+	// TODO remove
+	Role  string
+	Roles []Role
+}
+
+type Role struct {
+	CompanyID string
+	Role      string
 }
 
 type Card struct {

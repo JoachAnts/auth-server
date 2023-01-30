@@ -12,9 +12,14 @@ import (
 )
 
 type TestIdentityResponse struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
-	Role string `json:"role"`
+	ID    string `json:"id"`
+	Name  string `json:"name"`
+	Roles []Role `json:"roles"`
+}
+
+type Role struct {
+	CompanyID string `json:"companyID"`
+	Role      string `json:"role"`
 }
 
 func testHandler(t *testing.T, userID *string, expectedStatus int, expectedBody *TestIdentityResponse) {
@@ -31,12 +36,35 @@ func testHandler(t *testing.T, userID *string, expectedStatus int, expectedBody 
 		"1": {
 			ID:   "1",
 			Name: "John Reece",
-			Role: "user",
+			Roles: []repo.Role{
+				{
+					CompanyID: "1",
+					Role:      "user",
+				},
+				{
+					CompanyID: "2",
+					Role:      "admin",
+				},
+			},
 		},
 		"2": {
 			ID:   "2",
 			Name: "Bob Smith",
-			Role: "admin",
+			Roles: []repo.Role{
+				{
+					CompanyID: "1",
+					Role:      "admin",
+				},
+				{
+					CompanyID: "2",
+					Role:      "user",
+				},
+			},
+		},
+		"3": {
+			ID:    "3",
+			Name:  "Eve",
+			Roles: nil,
 		},
 	}, map[string]repo.Card{})).ServeHTTP(writer, req)
 
@@ -50,25 +78,48 @@ func testHandler(t *testing.T, userID *string, expectedStatus int, expectedBody 
 	}
 	assert.Equal(t, expectedBody.ID, resBody.ID)
 	assert.Equal(t, expectedBody.Name, resBody.Name)
-	assert.Equal(t, expectedBody.Role, resBody.Role)
+	assert.Equal(t, expectedBody.Roles, resBody.Roles)
 }
 
-func TestIdentityUser(t *testing.T) {
+func TestIdentityUser1(t *testing.T) {
 	userID := "1"
 	testHandler(t, &userID, 200, &TestIdentityResponse{
 		ID:   "1",
 		Name: "John Reece",
-		Role: "user",
+		Roles: []Role{
+			{
+				CompanyID: "1",
+				Role:      "user",
+			},
+			{
+				CompanyID: "2",
+				Role:      "admin",
+			},
+		},
 	})
 }
 
-func TestIdentityAdmin(t *testing.T) {
+func TestIdentityUser2(t *testing.T) {
 	userID := "2"
 	testHandler(t, &userID, 200, &TestIdentityResponse{
 		ID:   "2",
 		Name: "Bob Smith",
-		Role: "admin",
+		Roles: []Role{
+			{
+				CompanyID: "1",
+				Role:      "admin",
+			},
+			{
+				CompanyID: "2",
+				Role:      "user",
+			},
+		},
 	})
+}
+
+func TestIdentityUserWithoutRoles(t *testing.T) {
+	userID := "3"
+	testHandler(t, &userID, http.StatusForbidden, nil)
 }
 
 func TestIdentityUnauthenticated(t *testing.T) {

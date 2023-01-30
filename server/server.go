@@ -20,11 +20,31 @@ func Start() {
 			ID:   "1",
 			Name: "John Smith",
 			Role: "user",
+			Roles: []repo.Role{
+				{
+					CompanyID: "1",
+					Role:      "user",
+				},
+				{
+					CompanyID: "2",
+					Role:      "admin",
+				},
+			},
 		},
 		"2": {
 			ID:   "2",
 			Name: "Bob Bloggs",
 			Role: "admin",
+			Roles: []repo.Role{
+				{
+					CompanyID: "1",
+					Role:      "admin",
+				},
+				{
+					CompanyID: "2",
+					Role:      "user",
+				},
+			},
 		},
 	}, map[string]repo.Card{
 		"1": {
