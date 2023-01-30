@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -9,10 +8,6 @@ import (
 	"github.com/JoachAnts/auth-server/identity"
 	"github.com/JoachAnts/auth-server/repo"
 )
-
-func identityHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "You")
-}
 
 func Start() {
 	repo := repo.NewRepo(map[string]repo.User{
