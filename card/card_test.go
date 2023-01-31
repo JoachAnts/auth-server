@@ -125,6 +125,37 @@ func testChangeLimitAPI(t *testing.T, reqB *TestLimitRequest, authUser *string, 
 		t.Fatal(err)
 	}
 
+	cards := map[string](map[string]repo.Card){
+		"1": {
+			"1": {
+				MaskedNumber: "**** **** **** 1111",
+				Exp:          "12/23",
+				Limit:        10000,
+				Balance:      4321,
+			},
+			"2": {
+				MaskedNumber: "**** **** **** 2222",
+				Exp:          "12/23",
+				Limit:        10000,
+				Balance:      4321,
+			},
+		},
+		"2": {
+			"1": {
+				MaskedNumber: "**** **** **** 3333",
+				Exp:          "12/23",
+				Limit:        10000,
+				Balance:      4321,
+			},
+			"2": {
+				MaskedNumber: "**** **** **** 4444",
+				Exp:          "12/23",
+				Limit:        10000,
+				Balance:      4321,
+			},
+		},
+	}
+
 	card.NewHandler(repo.NewRepo(
 		map[string]repo.User{
 			"1": {
@@ -144,41 +175,21 @@ func testChangeLimitAPI(t *testing.T, reqB *TestLimitRequest, authUser *string, 
 				},
 			},
 		},
-		map[string](map[string]repo.Card){
-			"1": {
-				"1": {
-					MaskedNumber: "**** **** **** 1111",
-					Exp:          "12/23",
-					Limit:        10000,
-					Balance:      4321,
-				},
-				"2": {
-					MaskedNumber: "**** **** **** 2222",
-					Exp:          "12/23",
-					Limit:        10000,
-					Balance:      4321,
-				},
-			},
-			"2": {
-				"1": {
-					MaskedNumber: "**** **** **** 3333",
-					Exp:          "12/23",
-					Limit:        10000,
-					Balance:      4321,
-				},
-				"2": {
-					MaskedNumber: "**** **** **** 4444",
-					Exp:          "12/23",
-					Limit:        10000,
-					Balance:      4321,
-				},
-			},
-		},
+		cards,
 	)).ServeHTTP(writer, req)
 
 	assert.Equal(t, expectedStatus, writer.Result().StatusCode)
+	if expectedStatus != http.StatusOK {
+		return
+	}
 
-	// TODO assert limit changed
+	resBody := TestCardDetails{}
+	if err = json.Unmarshal(writer.Body.Bytes(), &resBody); err != nil {
+		t.Fatalf("Failed to unmarshal response: %s", err)
+	}
+
+	assert.Equal(t, cards[reqB.UserID][reqB.CompanyID].MaskedNumber, resBody.MaskedNumber)
+	assert.Equal(t, reqB.NewLimit, resBody.Limit)
 }
 
 func TestUserShouldNotBeAbleToModifyLimit(t *testing.T) {
@@ -190,6 +201,15 @@ func TestUserShouldNotBeAbleToModifyLimit(t *testing.T) {
 	}, &userID, http.StatusForbidden)
 }
 
+func TestUserShouldBeAbleToModifyLimitInAdminCompany(t *testing.T) {
+	userID := "1"
+	testChangeLimitAPI(t, &TestLimitRequest{
+		UserID:    "2",
+		CompanyID: "2",
+		NewLimit:  20000,
+	}, &userID, http.StatusOK)
+}
+
 func TestAdminShouldBeAbleToModifyLimit(t *testing.T) {
 	userID := "2"
 	testChangeLimitAPI(t, &TestLimitRequest{
@@ -197,4 +217,13 @@ func TestAdminShouldBeAbleToModifyLimit(t *testing.T) {
 		CompanyID: "1",
 		NewLimit:  20000,
 	}, &userID, http.StatusOK)
+}
+
+func TestAdminShouldBeAbleToModifyLimit2(t *testing.T) {
+	userID := "2"
+	testChangeLimitAPI(t, &TestLimitRequest{
+		UserID:    "1",
+		CompanyID: "2",
+		NewLimit:  20000,
+	}, &userID, http.StatusForbidden)
 }

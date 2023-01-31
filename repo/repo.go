@@ -3,7 +3,7 @@ package repo
 type Repo interface {
 	GetUser(id string) *User
 	GetCards(userID string) map[string]Card
-	SetCardLimit(userID string, newLimit int) *Card
+	SetCardLimit(userID string, companyID string, newLimit int) *Card
 }
 
 type User struct {
@@ -49,12 +49,12 @@ func (r *repo) GetCards(id string) map[string]Card {
 	return result
 }
 
-func (r *repo) SetCardLimit(userID string, newLimit int) *Card {
-	result, found := r.cards[userID]["1"]
+func (r *repo) SetCardLimit(userID string, companyID string, newLimit int) *Card {
+	result, found := r.cards[userID][companyID]
 	if !found {
 		return nil
 	}
 	result.Limit = newLimit
-	r.cards[userID]["1"] = result
+	r.cards[userID][companyID] = result
 	return &result
 }

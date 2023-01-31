@@ -106,12 +106,18 @@ func (h *h) doPost(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusForbidden)
 		return
 	}
-	res := h.repo.SetCardLimit(reqBody.UserID, reqBody.NewLimit)
+	res := h.repo.SetCardLimit(reqBody.UserID, reqBody.CompanyID, reqBody.NewLimit)
 	if res == nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	b, err := json.Marshal(res)
+	resBody := CardDetails{
+		MaskedNumber: res.MaskedNumber,
+		Exp:          res.Exp,
+		Limit:        res.Limit,
+		Balance:      res.Balance,
+	}
+	b, err := json.Marshal(resBody)
 	if err != nil {
 		log.Printf("Error encoding response body: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
