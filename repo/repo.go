@@ -2,7 +2,7 @@ package repo
 
 type Repo interface {
 	GetUser(id string) *User
-	GetCard(userID string) *Card
+	GetCards(userID string) map[string]Card
 	SetCardLimit(userID string, newLimit int) *Card
 }
 
@@ -26,7 +26,7 @@ type Card struct {
 	Exp          string
 }
 
-func NewRepo(users map[string]User, cards map[string]Card) Repo {
+func NewRepo(users map[string]User, cards map[string](map[string]Card)) Repo {
 	return &repo{
 		users: users,
 		cards: cards,
@@ -35,7 +35,7 @@ func NewRepo(users map[string]User, cards map[string]Card) Repo {
 
 type repo struct {
 	users map[string]User
-	cards map[string]Card
+	cards map[string](map[string]Card)
 }
 
 func (r *repo) GetUser(id string) *User {
@@ -46,20 +46,20 @@ func (r *repo) GetUser(id string) *User {
 	return &result
 }
 
-func (r *repo) GetCard(id string) *Card {
+func (r *repo) GetCards(id string) map[string]Card {
 	result, found := r.cards[id]
 	if !found {
 		return nil
 	}
-	return &result
+	return result
 }
 
 func (r *repo) SetCardLimit(userID string, newLimit int) *Card {
-	result, found := r.cards[userID]
+	result, found := r.cards[userID]["1"]
 	if !found {
 		return nil
 	}
 	result.Limit = newLimit
-	r.cards[userID] = result
+	r.cards[userID]["1"] = result
 	return &result
 }

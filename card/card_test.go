@@ -13,6 +13,15 @@ import (
 )
 
 type TestCardResponse struct {
+	Cards []TestCard `json:"cards"`
+}
+
+type TestCard struct {
+	CompanyID string          `json:"companyID"`
+	Card      TestCardDetails `json:"card"`
+}
+
+type TestCardDetails struct {
 	// TODO think about how to support different currencies
 	MaskedNumber string `json:"maskedNumber"`
 	Exp          string `json:"exp"`
@@ -32,12 +41,20 @@ func testGetHandler(t *testing.T, authUser *string, expectedStatus int, expected
 
 	card.NewHandler(repo.NewRepo(
 		map[string]repo.User{},
-		map[string]repo.Card{
+		map[string](map[string]repo.Card){
 			"1": {
-				MaskedNumber: "**** **** **** 1111",
-				Exp:          "12/23",
-				Limit:        10000,
-				Balance:      4321,
+				"1": {
+					MaskedNumber: "**** **** **** 1111",
+					Exp:          "12/23",
+					Limit:        10000,
+					Balance:      4321,
+				},
+				"2": {
+					MaskedNumber: "**** **** **** 2222",
+					Exp:          "12/23",
+					Limit:        10000,
+					Balance:      4321,
+				},
 			},
 		},
 	)).ServeHTTP(writer, req)
@@ -50,19 +67,32 @@ func testGetHandler(t *testing.T, authUser *string, expectedStatus int, expected
 	if err = json.Unmarshal(writer.Body.Bytes(), &resBody); err != nil {
 		t.Fatalf("Failed to unmarshal response: %s", err)
 	}
-	assert.Equal(t, expectedBody.MaskedNumber, resBody.MaskedNumber)
-	assert.Equal(t, expectedBody.Exp, resBody.Exp)
-	assert.Equal(t, expectedBody.Limit, resBody.Limit)
-	assert.Equal(t, expectedBody.Balance, resBody.Balance)
+	assert.Equal(t, *expectedBody, resBody)
 }
 
 func TestCardUser(t *testing.T) {
 	userID := "1"
 	testGetHandler(t, &userID, http.StatusOK, &TestCardResponse{
-		MaskedNumber: "**** **** **** 1111",
-		Exp:          "12/23",
-		Limit:        10000,
-		Balance:      4321,
+		Cards: []TestCard{
+			{
+				CompanyID: "1",
+				Card: TestCardDetails{
+					MaskedNumber: "**** **** **** 1111",
+					Exp:          "12/23",
+					Limit:        10000,
+					Balance:      4321,
+				},
+			},
+			{
+				CompanyID: "2",
+				Card: TestCardDetails{
+					MaskedNumber: "**** **** **** 2222",
+					Exp:          "12/23",
+					Limit:        10000,
+					Balance:      4321,
+				},
+			},
+		},
 	})
 }
 
@@ -107,17 +137,21 @@ func testChangeLimitAPI(t *testing.T, reqB *TestLimitRequest, authUser *string, 
 				Role: "admin",
 			},
 		},
-		map[string]repo.Card{
+		map[string](map[string]repo.Card){
 			"1": {
-				MaskedNumber: "**** **** **** 1111",
-				Exp:          "12/23",
-				Limit:        10000,
-				Balance:      4321,
+				"1": {
+					MaskedNumber: "**** **** **** 1111",
+					Exp:          "12/23",
+					Limit:        10000,
+					Balance:      4321,
+				},
 			},
 		},
 	)).ServeHTTP(writer, req)
 
 	assert.Equal(t, expectedStatus, writer.Result().StatusCode)
+
+	// TODO assert limit changed
 }
 
 func TestUserShouldNotBeAbleToModifyLimit(t *testing.T) {

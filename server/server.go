@@ -41,12 +41,14 @@ func Start() {
 				},
 			},
 		},
-	}, map[string]repo.Card{
+	}, map[string](map[string]repo.Card){
 		"1": {
-			MaskedNumber: "**** **** **** 4444",
-			Exp:          "12/23",
-			Limit:        10000,
-			Balance:      4321,
+			"1": {
+				MaskedNumber: "**** **** **** 4444",
+				Exp:          "12/23",
+				Limit:        10000,
+				Balance:      4321,
+			},
 		},
 	})
 	identityHandler := identity.NewHandler(repo)
