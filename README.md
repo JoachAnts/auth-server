@@ -91,14 +91,19 @@ To start the auth server, run the following command:
 
     docker compose up
 
+# Sanity Test
+
+A simple bash script is included, to test the API. This can be run like so:
+
+    ./sanity-test.sh
+
 # TODO
 
 - [ ] Run tests in Docker compose
-- [ ] Use card repository for card handler
-- [ ] Implement limit change API
-- [ ] Think about different currencies
 
-# Out of Scope
+# Known Limitations / Future Considerations
 
-1. Secure authorization tokens (e.g. JWT)
-1. DB layer
+1. May want to move to a more powerful routing library if use of path variables is needed [e.g. chi](https://github.com/go-chi/chi)
+1. May need to consider how different currencies and card formats are handled
+1. For the purposes of limiting scope, an actual DB was not used
+1. For the purposes of simplicity, a user need only provide their user ID as an auth token. This is obviously not secure.

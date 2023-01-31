@@ -36,7 +36,6 @@ type h struct {
 }
 
 func (h *h) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	// TODO use mux
 	if r.Method == http.MethodPost {
 		h.doPost(w, r)
 		return
