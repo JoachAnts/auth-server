@@ -7,6 +7,8 @@ COPY go.sum ./
 
 COPY . .
 
+RUN go test ./...
+
 RUN go build -o main ./cmd
 
 EXPOSE 8080

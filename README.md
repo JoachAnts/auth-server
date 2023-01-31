@@ -89,7 +89,9 @@ curl http://localhost:8080/card \
 
 To start the auth server, run the following command:
 
-    docker compose up
+    docker compose build && docker compose up
+
+This will also run the tests as part of the build.
 
 # Sanity Test
 
