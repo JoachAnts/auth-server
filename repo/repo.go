@@ -11,12 +11,7 @@ type User struct {
 	Name string
 	// TODO remove
 	Role  string
-	Roles []Role
-}
-
-type Role struct {
-	CompanyID string
-	Role      string
+	Roles map[string]string
 }
 
 type Card struct {

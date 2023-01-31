@@ -83,8 +83,9 @@ func (h *h) doGet(w http.ResponseWriter, r *http.Request) {
 
 // TODO use camel case
 type CardLimitRequest struct {
-	UserID   string
-	NewLimit int
+	UserID    string
+	CompanyID string
+	NewLimit  int
 }
 
 func (h *h) doPost(w http.ResponseWriter, r *http.Request) {
@@ -94,15 +95,15 @@ func (h *h) doPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	user := h.repo.GetUser(requestingUserID)
-	if user.Role != "admin" {
-		w.WriteHeader(http.StatusForbidden)
-		return
-	}
 	var reqBody = CardLimitRequest{}
 	err := json.NewDecoder(r.Body).Decode(&reqBody)
 	if err != nil {
 		log.Printf("Error decoding request body: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	if user.Roles[reqBody.CompanyID] != "admin" {
+		w.WriteHeader(http.StatusForbidden)
 		return
 	}
 	res := h.repo.SetCardLimit(reqBody.UserID, reqBody.NewLimit)

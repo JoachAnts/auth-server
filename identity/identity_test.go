@@ -12,14 +12,9 @@ import (
 )
 
 type TestIdentityResponse struct {
-	ID    string `json:"id"`
-	Name  string `json:"name"`
-	Roles []Role `json:"roles"`
-}
-
-type Role struct {
-	CompanyID string `json:"companyID"`
-	Role      string `json:"role"`
+	ID    string            `json:"id"`
+	Name  string            `json:"name"`
+	Roles map[string]string `json:"roles"`
 }
 
 func testHandler(t *testing.T, userID *string, expectedStatus int, expectedBody *TestIdentityResponse) {
@@ -36,29 +31,17 @@ func testHandler(t *testing.T, userID *string, expectedStatus int, expectedBody 
 		"1": {
 			ID:   "1",
 			Name: "John Reece",
-			Roles: []repo.Role{
-				{
-					CompanyID: "1",
-					Role:      "user",
-				},
-				{
-					CompanyID: "2",
-					Role:      "admin",
-				},
+			Roles: map[string]string{
+				"1": "user",
+				"2": "admin",
 			},
 		},
 		"2": {
 			ID:   "2",
 			Name: "Bob Smith",
-			Roles: []repo.Role{
-				{
-					CompanyID: "1",
-					Role:      "admin",
-				},
-				{
-					CompanyID: "2",
-					Role:      "user",
-				},
+			Roles: map[string]string{
+				"1": "admin",
+				"2": "user",
 			},
 		},
 		"3": {
@@ -86,15 +69,9 @@ func TestIdentityUser1(t *testing.T) {
 	testHandler(t, &userID, 200, &TestIdentityResponse{
 		ID:   "1",
 		Name: "John Reece",
-		Roles: []Role{
-			{
-				CompanyID: "1",
-				Role:      "user",
-			},
-			{
-				CompanyID: "2",
-				Role:      "admin",
-			},
+		Roles: map[string]string{
+			"1": "user",
+			"2": "admin",
 		},
 	})
 }
@@ -104,15 +81,9 @@ func TestIdentityUser2(t *testing.T) {
 	testHandler(t, &userID, 200, &TestIdentityResponse{
 		ID:   "2",
 		Name: "Bob Smith",
-		Roles: []Role{
-			{
-				CompanyID: "1",
-				Role:      "admin",
-			},
-			{
-				CompanyID: "2",
-				Role:      "user",
-			},
+		Roles: map[string]string{
+			"1": "admin",
+			"2": "user",
 		},
 	})
 }

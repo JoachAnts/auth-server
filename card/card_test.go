@@ -106,8 +106,9 @@ func TestNoCardForUser(t *testing.T) {
 }
 
 type TestLimitRequest struct {
-	UserID   string
-	NewLimit int
+	UserID    string
+	CompanyID string
+	NewLimit  int
 }
 
 func testChangeLimitAPI(t *testing.T, reqB *TestLimitRequest, authUser *string, expectedStatus int) {
@@ -129,18 +130,44 @@ func testChangeLimitAPI(t *testing.T, reqB *TestLimitRequest, authUser *string, 
 			"1": {
 				ID:   "1",
 				Name: "John Reece",
-				Role: "user",
+				Roles: map[string]string{
+					"1": "user",
+					"2": "admin",
+				},
 			},
 			"2": {
 				ID:   "2",
 				Name: "Bob Smith",
-				Role: "admin",
+				Roles: map[string]string{
+					"1": "admin",
+					"2": "user",
+				},
 			},
 		},
 		map[string](map[string]repo.Card){
 			"1": {
 				"1": {
 					MaskedNumber: "**** **** **** 1111",
+					Exp:          "12/23",
+					Limit:        10000,
+					Balance:      4321,
+				},
+				"2": {
+					MaskedNumber: "**** **** **** 2222",
+					Exp:          "12/23",
+					Limit:        10000,
+					Balance:      4321,
+				},
+			},
+			"2": {
+				"1": {
+					MaskedNumber: "**** **** **** 3333",
+					Exp:          "12/23",
+					Limit:        10000,
+					Balance:      4321,
+				},
+				"2": {
+					MaskedNumber: "**** **** **** 4444",
 					Exp:          "12/23",
 					Limit:        10000,
 					Balance:      4321,
@@ -157,15 +184,17 @@ func testChangeLimitAPI(t *testing.T, reqB *TestLimitRequest, authUser *string, 
 func TestUserShouldNotBeAbleToModifyLimit(t *testing.T) {
 	userID := "1"
 	testChangeLimitAPI(t, &TestLimitRequest{
-		UserID:   "1",
-		NewLimit: 20000,
+		UserID:    "1",
+		CompanyID: "1",
+		NewLimit:  20000,
 	}, &userID, http.StatusForbidden)
 }
 
 func TestAdminShouldBeAbleToModifyLimit(t *testing.T) {
 	userID := "2"
 	testChangeLimitAPI(t, &TestLimitRequest{
-		UserID:   "1",
-		NewLimit: 20000,
+		UserID:    "1",
+		CompanyID: "1",
+		NewLimit:  20000,
 	}, &userID, http.StatusOK)
 }
