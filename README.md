@@ -99,10 +99,6 @@ A simple bash script is included, to test the API. This can be run like so:
 
     ./sanity-test.sh
 
-# TODO
-
-- [ ] Run tests in Docker compose
-
 # Known Limitations / Future Considerations
 
 1. May want to move to a more powerful routing library if use of path variables is needed [e.g. chi](https://github.com/go-chi/chi)
