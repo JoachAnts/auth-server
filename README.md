@@ -10,12 +10,20 @@ curl http://localhost:8080/me \
 ```
 
 ### Example Response
-
 ```javascript
 {
     "id": 1,
     "name" "Joe Bloggs",
-    "role": "user"
+    "roles": [
+        {
+            "companyID": "1",
+            "role": "user"
+        },
+        {
+            "companyID": "2",
+            "role": "admin"
+        }
+    ]
 }
 ```
 
@@ -32,12 +40,26 @@ curl http://localhost:8080/card \
 
 ```javascript
 {
-    "card": {
-        "maskedNumber": "**** **** **** 4444",
-        "limit": 10000,
-        "balance": 1241,
-        "exp": "12/23"
-    }
+    "cards": [
+        {
+            "companyID": "1",
+            "card": {
+                "maskedNumber": "**** **** **** 4444",
+                "limit": 10000,
+                "balance": 1241,
+                "exp": "12/23"
+            }
+        },
+        {
+            "companyID": "2",
+            "card": {
+                "maskedNumber": "**** **** **** 1111",
+                "limit": 500,
+                "balance": 76,
+                "exp": "10/23"
+            }
+        }
+    ]
 }
 ```
 
@@ -49,7 +71,7 @@ curl http://localhost:8080/card \
 curl http://localhost:8080/card \
         -H "Content-Type: application/json" \
         -H "Authorization: 2" \
-        -d '{"UserID": "1", "NewLimit": 20000}'
+        -d '{"UserID": "1", "CompanyID": "1", "NewLimit": 20000}'
 ```
 
 ### Example Response
@@ -75,3 +97,8 @@ To start the auth server, run the following command:
 - [ ] Use card repository for card handler
 - [ ] Implement limit change API
 - [ ] Think about different currencies
+
+# Out of Scope
+
+1. Secure authorization tokens (e.g. JWT)
+1. DB layer
