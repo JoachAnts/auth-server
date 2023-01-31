@@ -7,10 +7,8 @@ type Repo interface {
 }
 
 type User struct {
-	ID   string
-	Name string
-	// TODO remove
-	Role  string
+	ID    string
+	Name  string
 	Roles map[string]string
 }
 

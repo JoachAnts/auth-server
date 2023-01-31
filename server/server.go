@@ -14,7 +14,6 @@ func Start() {
 		"1": {
 			ID:   "1",
 			Name: "John Smith",
-			Role: "user",
 			Roles: map[string]string{
 				"1": "user",
 				"2": "admin",
@@ -23,7 +22,6 @@ func Start() {
 		"2": {
 			ID:   "2",
 			Name: "Bob Bloggs",
-			Role: "admin",
 			Roles: map[string]string{
 				"1": "admin",
 				"2": "user",
@@ -32,6 +30,26 @@ func Start() {
 	}, map[string](map[string]repo.Card){
 		"1": {
 			"1": {
+				MaskedNumber: "**** **** **** 1111",
+				Exp:          "12/23",
+				Limit:        10000,
+				Balance:      4321,
+			},
+			"2": {
+				MaskedNumber: "**** **** **** 2222",
+				Exp:          "12/23",
+				Limit:        10000,
+				Balance:      4321,
+			},
+		},
+		"2": {
+			"1": {
+				MaskedNumber: "**** **** **** 3333",
+				Exp:          "12/23",
+				Limit:        10000,
+				Balance:      4321,
+			},
+			"2": {
 				MaskedNumber: "**** **** **** 4444",
 				Exp:          "12/23",
 				Limit:        10000,
