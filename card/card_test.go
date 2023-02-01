@@ -3,6 +3,7 @@ package card_test
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -192,38 +193,33 @@ func testChangeLimitAPI(t *testing.T, reqB *TestLimitRequest, authUser *string, 
 	assert.Equal(t, reqB.NewLimit, resBody.Limit)
 }
 
-func TestUserShouldNotBeAbleToModifyLimit(t *testing.T) {
-	userID := "1"
-	testChangeLimitAPI(t, &TestLimitRequest{
-		UserID:    "1",
-		CompanyID: "1",
-		NewLimit:  20000,
-	}, &userID, http.StatusForbidden)
-}
-
-func TestUserShouldBeAbleToModifyLimitInAdminCompany(t *testing.T) {
-	userID := "1"
-	testChangeLimitAPI(t, &TestLimitRequest{
-		UserID:    "2",
-		CompanyID: "2",
-		NewLimit:  20000,
-	}, &userID, http.StatusOK)
-}
-
-func TestAdminShouldBeAbleToModifyLimit(t *testing.T) {
-	userID := "2"
-	testChangeLimitAPI(t, &TestLimitRequest{
-		UserID:    "1",
-		CompanyID: "1",
-		NewLimit:  20000,
-	}, &userID, http.StatusOK)
-}
-
-func TestAdminShouldBeAbleToModifyLimit2(t *testing.T) {
-	userID := "2"
-	testChangeLimitAPI(t, &TestLimitRequest{
-		UserID:    "1",
-		CompanyID: "2",
-		NewLimit:  20000,
-	}, &userID, http.StatusForbidden)
+func TestChangeLimitAPI(t *testing.T) {
+	testCases := []struct {
+		actingUserID   string
+		cardUserID     string
+		cardCompanyID  string
+		newLimit       int
+		expectedStatus int
+	}{
+		{"1", "1", "1", 20000, http.StatusForbidden},
+		{"1", "2", "1", 20000, http.StatusForbidden},
+		{"1", "1", "2", 20000, http.StatusOK},
+		{"1", "2", "2", 20000, http.StatusOK},
+		{"2", "1", "1", 20000, http.StatusOK},
+		{"2", "2", "1", 20000, http.StatusOK},
+		{"2", "1", "2", 20000, http.StatusForbidden},
+		{"2", "2", "2", 20000, http.StatusForbidden},
+	}
+	for _, tc := range testCases {
+		t.Run(
+			fmt.Sprintf("User %s trying to modify limit for user %v and company %v should receive status %v",
+				tc.actingUserID, tc.cardUserID, tc.cardCompanyID, tc.expectedStatus),
+			func(t *testing.T) {
+				testChangeLimitAPI(t, &TestLimitRequest{
+					tc.cardUserID,
+					tc.cardCompanyID,
+					tc.newLimit,
+				}, &tc.actingUserID, tc.expectedStatus)
+			})
+	}
 }
